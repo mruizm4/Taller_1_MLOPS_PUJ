@@ -40,7 +40,7 @@ async def root(
     culmen_length_mm: float = Query(39, description = "culmen_length_mm"),
     culmen_depth_mm: float = Query(18.7, description = ""),
     flipper_length_mm: float = Query(180, description = ""),
-    body_mass_g: float = Query(370, description = ""),
+    body_mass_g: float = Query(3700, description = ""),
     island: islas_class = Query(islas_class.Torgersen, description = ""),
     sex: sex_class = Query(sex_class.Male, description = ""),
 ):
