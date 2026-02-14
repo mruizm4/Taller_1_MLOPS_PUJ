@@ -5,6 +5,7 @@ from predict import predict_new_data
 # Cargar modelo (prueba con svm, knn o decision_tree)
 model, encoders, scaler = load_model("models/decision_tree.pkl")
 
+
 # Crear un DF con 1 registro
 df_test = pd.DataFrame([{
     "culmen_length_mm": 39.1,

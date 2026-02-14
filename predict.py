@@ -1,5 +1,7 @@
 import pandas as pd
-from train import load_model
+#from train import load_model
+import pickle
+
 
 EXPECTED_NUM_COLS = [
     "culmen_length_mm",
@@ -23,6 +25,38 @@ ALL_EXPECTED_COLS = EXPECTED_NUM_COLS + EXPECTED_CAT_COLS
 """
 Lista de todas las columnas esperadas (numéricas + categóricas).
 """
+
+def load_model(filename):
+    """Carga un modelo entrenado junto con sus componentes de preprocesamiento.
+    
+    Deserializa el modelo, los encoders y el scaler desde un archivo pickle
+    previamente guardado.
+    
+    Args:
+        filename (str): Ruta y nombre del archivo desde donde cargar el modelo.
+        
+    Returns:
+        tuple: Tupla contiendo:
+            - model: Modelo entrenado (DecisionTreeClassifier, SVC o KNeighborsClassifier).
+            - encoders (dict): Diccionario con los OneHotEncoders para variables categóricas.
+            - scaler: StandardScaler utilizado para normalizar características (puede ser None).
+            
+    Raises:
+        FileNotFoundError: Si el archivo especificado no existe.
+        pickle.UnpicklingError: Si el archivo no contiene un objeto pickle válido.
+        
+    Note:
+        - El archivo debe haber sido creado con la función save_model()
+        - Los componentes devueltos se pueden usar para realizar predicciones en nuevos datos
+    
+    Example:
+        >>> model, encoders, scaler = load_model('models/my_model.pkl')
+    """
+    with open(filename, "rb") as f:
+        data = pickle.load(f)
+
+    return data["model"], data["encoders"], data["scaler"]
+
 
 def predict_new_data(df_new, model, encoders, scaler=None):
     """

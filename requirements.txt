@@ -1,3 +1,5 @@
+fastapi
+uvicorn
 joblib==1.5.3
 numpy==2.4.2
 pandas==3.0.0
@@ -7,3 +9,4 @@ scipy==1.17.0
 six==1.17.0
 threadpoolctl==3.6.0
 tzdata==2025.3
+python-multipart
