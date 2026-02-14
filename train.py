@@ -2,7 +2,7 @@ import pandas as pd
 import pickle
 
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
@@ -10,12 +10,12 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 
 def preprocess_data(df):
-    """Preprocesa los datos del conjunto de datos de pingüinos.
+    """Preprocesa los datos del conjunto de datos de pingüinos usando OneHotEncoder para variables categóricas.
     
     Realiza las siguientes operaciones:
     - Rellena valores faltantes en columnas numéricas con la mediana
     - Rellena valores faltantes en columnas categóricas con "Unknown"
-    - Codifica las variables categóricas utilizando LabelEncoder
+    - Codifica las variables categóricas utilizando OneHotEncoder
     - Separa las características (X) del target (y)
     
     Args:
@@ -25,7 +25,7 @@ def preprocess_data(df):
         tuple: Tupla contiendo:
             - X (pd.DataFrame): Características preprocesadas
             - y (pd.Series): Variable objetivo (especies)
-            - encoders (dict): Diccionario con los LabelEncoders para cada columna categórica
+            - encoders (dict): Diccionario con los OneHotEncoders para cada columna categórica
     
     Example:
         >>> df = pd.read_csv('penguins.csv')
@@ -49,20 +49,23 @@ def preprocess_data(df):
     X = df.drop(columns=target)
     y = df[target]
 
-    encoders = {}
+    # OneHotEncoder para variables categóricas
+    ohe = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
+    X_cat = ohe.fit_transform(X[cat_cols])
+    cat_feature_names = ohe.get_feature_names_out(cat_cols)
+    X_cat_df = pd.DataFrame(X_cat, columns=cat_feature_names, index=X.index)
 
-    for col in cat_cols:
-        X[col] = X[col].fillna("Unknown")
-        le = LabelEncoder()
-        X[col] = le.fit_transform(X[col])
-        encoders[col] = le
+    # Concatenar numéricas y categóricas
+    X_final = pd.concat([X[num_cols], X_cat_df], axis=1)
 
-    return X, y, encoders
+    encoders = {"onehot": ohe}
+
+    return X_final, y, encoders
 
 
 
 def train_decision_tree(df):
-    """Entrena un modelo de Árbol de Decisión.
+    """Entrena un modelo de Árbol de Decisión usando OneHotEncoder.
     
     Preprocesa los datos, divide en conjuntos de entrenamiento y prueba,
     entrena un DecisionTreeClassifier y evalúa su desempeño.
@@ -105,7 +108,7 @@ def train_decision_tree(df):
 
 
 def train_svm(df):
-    """Entrena un modelo de Máquina de Vectores de Soporte (SVM).
+    """Entrena un modelo de SVM usando OneHotEncoder.
     
     Preprocesa los datos, aplica normalización estándar, divide en conjuntos
     de entrenamiento y prueba, entrena un SVC y evalúa su desempeño.
@@ -126,7 +129,8 @@ def train_svm(df):
     X, y, encoders = preprocess_data(df)
 
     scaler = StandardScaler()
-    X = scaler.fit_transform(X)
+    X_scaled = scaler.fit_transform(X)
+    X = pd.DataFrame(X_scaled, columns=X.columns, index=X.index)
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y,
@@ -154,7 +158,7 @@ def train_svm(df):
 
 
 def train_knn(df):
-    """Entrena un modelo de K-Vecinos Más Cercanos (KNN).
+    """Entrena un modelo de KNN usando OneHotEncoder.
     
     Preprocesa los datos, aplica normalización estándar, divide en conjuntos
     de entrenamiento y prueba, entrena un KNeighborsClassifier y evalúa su desempeño.
@@ -174,7 +178,8 @@ def train_knn(df):
     X, y, encoders = preprocess_data(df)
 
     scaler = StandardScaler()
-    X = scaler.fit_transform(X)
+    X_scaled = scaler.fit_transform(X)
+    X = pd.DataFrame(X_scaled, columns=X.columns, index=X.index)
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y,
@@ -206,7 +211,7 @@ def evaluate_model(model, X_test, y_test, encoders, scaler, model_name):
         model: Modelo entrenado (DecisionTreeClassifier, SVC o KNeighborsClassifier).
         X_test (array-like): Características del conjunto de prueba.
         y_test (array-like): Etiquetas verdaderas del conjunto de prueba.
-        encoders (dict): Diccionario con los LabelEncoders para variables categóricas.
+        encoders (dict): Diccionario con los OneHotEncoders para variables categóricas.
         scaler: StandardScaler utilizado para normalizar X (None si no se usó).
         model_name (str): Nombre del modelo (ej: 'decision_tree', 'svm', 'knn').
         
@@ -234,10 +239,10 @@ CONFUSION MATRIX
 {matrix}
 """
 
-    with open(f"Taller_1_MLOPS_PUJ/models_performance/{model_name}_results.txt", "w") as f:
+    with open(f"models_performance/{model_name}_results.txt", "w") as f:
         f.write(results_text)
 
-    save_model(model, encoders, scaler, f"Taller_1_MLOPS_PUJ/models/{model_name}.pkl")
+    save_model(model, encoders, scaler, f"models/{model_name}.pkl")
 
     return model
 
@@ -250,7 +255,7 @@ def save_model(model, encoders, scaler, filename):
     
     Args:
         model: Modelo entrenado (DecisionTreeClassifier, SVC o KNeighborsClassifier).
-        encoders (dict): Diccionario con los LabelEncoders para variables categóricas.
+        encoders (dict): Diccionario con los OneHotEncoders para variables categóricas.
         scaler: StandardScaler utilizado para normalizar características (puede ser None).
         filename (str): Ruta y nombre del archivo donde guardar el modelo.
         
@@ -288,7 +293,7 @@ def load_model(filename):
     Returns:
         tuple: Tupla contiendo:
             - model: Modelo entrenado (DecisionTreeClassifier, SVC o KNeighborsClassifier).
-            - encoders (dict): Diccionario con los LabelEncoders para variables categóricas.
+            - encoders (dict): Diccionario con los OneHotEncoders para variables categóricas.
             - scaler: StandardScaler utilizado para normalizar características (puede ser None).
             
     Raises:
@@ -310,7 +315,7 @@ def load_model(filename):
 
 if __name__ == "__main__":
 
-    df = pd.read_csv("Taller_1_MLOPS_PUJ/datasets/penguins_size.csv")
+    df = pd.read_csv("datasets\penguins_size.csv")
 
     print("Training Decision Tree...")
     train_decision_tree(df)
