@@ -30,8 +30,8 @@ Genera predicciones en función de las características físicas enviadas como p
 | Parámetro           | Tipo       | Descripción                                        |
 | ------------------- | ---------- | -------------------------------------------------- |
 | `models`            | List[Enum] | Lista de modelos a utilizar (`TREE`, `KNN`, `SVM`) |
-| `culmen_length_mm`  | float      | Longitud del culmen                                |
-| `culmen_depth_mm`   | float      | Profundidad del culmen                             |
+| `culmen_length_mm`  | float      | Longitud del pico                                |
+| `culmen_depth_mm`   | float      | Profundidad del pico                             |
 | `flipper_length_mm` | float      | Longitud de la aleta                               |
 | `body_mass_g`       | float      | Masa corporal en gramos                            |
 | `island`            | Enum       | Isla de origen                                     |

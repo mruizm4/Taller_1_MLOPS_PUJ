@@ -21,6 +21,8 @@ models_dict = {
 
 class islas_class(str, Enum):
     Torgersen = "Torgersen"
+    Dream = "Dream"
+    Biscoe = "Biscoe"
 
 
 class sex_class(str, Enum):
@@ -36,13 +38,13 @@ class model_class(str, Enum):
 
 @app.post("/predict")
 async def root(
-    models: Annotated[List[model_class], Query(..., description = "")],
-    culmen_length_mm: float = Query(39, description = "culmen_length_mm"),
-    culmen_depth_mm: float = Query(18.7, description = ""),
-    flipper_length_mm: float = Query(180, description = ""),
-    body_mass_g: float = Query(3700, description = ""),
-    island: islas_class = Query(islas_class.Torgersen, description = ""),
-    sex: sex_class = Query(sex_class.Male, description = ""),
+    models: Annotated[List[model_class], Query(..., description = "List of models: Decision Tree, K-Nearest Neighbors, Support Vector Machines")],
+    culmen_length_mm: float = Query(39, description = "culmen length in millimeters (mm)"),
+    culmen_depth_mm: float = Query(18.7, description = "culmen depth in millimeters (mm)"),
+    flipper_length_mm: float = Query(180, description = " flipper length in millimeters (mm)"),
+    body_mass_g: float = Query(3700, description = "body mass (g)"),
+    island: islas_class = Query(islas_class.Torgersen, description = "island to which it belongs"),
+    sex: sex_class = Query(sex_class.Male, description = "penguin gender"),
 ):
 
 
