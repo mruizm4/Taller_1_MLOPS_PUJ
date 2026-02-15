@@ -88,7 +88,7 @@ class model_class(str, Enum):
 async def root(
     models: Annotated[
         List[model_class],
-        Query(..., description="Modelos a utilizar: TREE, KNN, SVM"),
+        Query(..., description="Modelos a utilizar: TREE, KNN, SVM. Para seleccionar más de un modelo, haga Ctrl + click sobre los modelos deseados."),
     ],
     culmen_length_mm: float = Query(39, description="Longitud del culmen en mm"),
     culmen_depth_mm: float = Query(18.7, description="Profundidad del culmen en mm"),
