@@ -4,7 +4,6 @@
 
 ---
 Por: Carlos Carvajales y Mateo Ruiz
----
 
 API REST desarrollada con **FastAPI** para realizar predicciones de especie de pingüino utilizando múltiples modelos de Machine Learning previamente entrenados.
 
