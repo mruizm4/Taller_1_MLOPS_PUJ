@@ -6,7 +6,9 @@ from predict import predict_new_data, load_model
 from enum import Enum
 
 
-app = FastAPI()
+app = FastAPI(title="Taller 1 MLOPS: Penguin Prediction API", 
+              description = "Este es un servicio para clasificar pingüinos según características físicas",
+              version = "1.0.0" )
 
 
 tree_model, tree_encoders, tree_scaler = load_model("decision_tree.pkl")
@@ -36,7 +38,7 @@ class model_class(str, Enum):
 
 
 
-@app.post("/predict")
+@app.post("/predict",summary = "Predecir especie", description = "En este endpoint puedes introducir los parametros para predicir la especie de pingüino segun los parametros dados" )
 async def root(
     models: Annotated[List[model_class], Query(..., description = "List of models: Decision Tree, K-Nearest Neighbors, Support Vector Machines")],
     culmen_length_mm: float = Query(39, description = "culmen length in millimeters (mm)"),

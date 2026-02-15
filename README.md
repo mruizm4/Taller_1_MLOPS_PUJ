@@ -1,6 +1,10 @@
 
 
-# 🐧 Taller_1_MLOPS_PUJ: Penguin Prediction API
+# 🐧 Taller_1_MLOPS_PUJ: Penguin Prediction API. 
+
+---
+Por: Carlos Carvajales y Mateo Ruiz
+---
 
 API REST desarrollada con **FastAPI** para realizar predicciones de especie de pingüino utilizando múltiples modelos de Machine Learning previamente entrenados.
 
@@ -69,7 +73,7 @@ docker build -t taller_1_image .
 ### Ejecutar el contenedor
 
 ```bash
-sudo docker run --name taller_1 -p 8000:8000 taller_1_image
+docker run --name taller_1 -p 8000:8000 taller_1_image
 ```
 
 La API quedará disponible en:
