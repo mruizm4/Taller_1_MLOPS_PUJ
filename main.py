@@ -143,6 +143,8 @@ async def root(
         "sex": sex
     }])
 
+    logger.info(f"input recibido: {df.to_json()}")
+
     response = {}
 
     # --------------------------------------------------------------------------
