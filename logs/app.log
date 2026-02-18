@@ -1,0 +1,3 @@
+2026-02-18 01:33:38,836 - INFO - Response enviado: {'KNN': ['Adelie']}
+2026-02-18 01:33:38,843 - INFO - Response enviado: {'KNN': ['Adelie'], 'SVM': ['Adelie']}
+2026-02-18 01:34:34,284 - INFO - Response enviado: {'TREE': ['Adelie'], 'KNN': ['Adelie']}

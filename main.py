@@ -15,11 +15,19 @@ Autor: Taller MLOps
 Versión: 1.0.0
 """
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Request,  Response
 import pandas as pd
 from typing import List, Annotated
 from predict import predict_new_data, load_model
 from enum import Enum
+import logging
+from logging.handlers import RotatingFileHandler
+import os
+import time 
+from fastapi.responses import JSONResponse
+
+
+
 
 
 # ------------------------------------------------------------------------------
@@ -32,6 +40,13 @@ app = FastAPI(
     version="1.0.0",
 )
 
+
+logging.basicConfig(
+    filename="logs/app.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 # ------------------------------------------------------------------------------
 # Carga de modelos
@@ -74,6 +89,7 @@ class model_class(str, Enum):
     TREE = "TREE"
     KNN = "KNN"
     SVM = "SVM"
+
 
 
 # ------------------------------------------------------------------------------
@@ -144,5 +160,6 @@ async def root(
 
         # Conversión a lista para serialización JSON
         response[model_name] = prediction.tolist()
+    logger.info(f"Response enviado: {response}")
 
     return response
